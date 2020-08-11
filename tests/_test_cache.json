@@ -1,0 +1,5 @@
+{
+  "taken_active": ["avarayr"],
+  "taken_inactive": ["not_avarayr"],
+  "not_taken": ["avarayr_not_taken"]
+}
