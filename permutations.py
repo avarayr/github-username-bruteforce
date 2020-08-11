@@ -7,6 +7,7 @@ import utils
 import time
 from tqdm import tqdm
 from UserCache import UserCache
+import string
 
 load_dotenv()
 personal_token = getenv('PERSONAL_TOKEN')
@@ -45,14 +46,13 @@ if decision != 'y':
 total_i = 0
 abandoned_i = 0
 not_taken_i = 0
+active_i = 0
 
 cache_dict = cache.getCacheDict()
 
 cache_taken_active = cache_dict.get('taken_active')
 cache_taken_inactive = cache_dict.get('taken_inactive')
 cache_not_taken = cache_dict.get('not_taken')
-
-force_save = False
 
 for username in tqdm(permutations, total=possible_combinations):
     try:
@@ -68,21 +68,34 @@ for username in tqdm(permutations, total=possible_combinations):
                 abandoned_i += 1
             else:
                 cache_taken_active.append(username)
+                active_i += 1
         else:
             tqdm.write(f'Found unused:  {username}')
             cache_not_taken.append(username)
             not_taken_i += 1
-            
 
         total_i += 1
         time.sleep(0.05)
     except KeyboardInterrupt:
         tqdm.write('Quitting')
-        force_save = True
+    except:
+        tqdm.write('Something bad happened')
     finally:
-        if total_i % 10 == 0 or force_save:
-          cache.save({
-              "taken_active": cache_taken_active,
-              "taken_inactive": cache_taken_inactive,
-              "not_taken": cache_not_taken
-          })
+        cache.save({
+            "taken_active": cache_taken_active,
+            "taken_inactive": cache_taken_inactive,
+            "not_taken": cache_not_taken
+        })
+
+
+print(f'Found {abandoned_i} abandoned accounts')
+print(f'Found {not_taken_i} unused usernames')
+print(f'Found {active_i} active accounts')
+print('———————————————————————————————————————')
+print('View results in cache.json')
+
+cache.save({
+    "taken_active": cache_taken_active,
+    "taken_inactive": cache_taken_inactive,
+    "not_taken": cache_not_taken
+})

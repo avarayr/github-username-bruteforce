@@ -4,7 +4,7 @@ import json
 
 
 class UserCache():
-    def __init__(self, cache_filename='_cache.json'):
+    def __init__(self, cache_filename='cache.json'):
         self.cache_filename = cache_filename
         if not os.path.exists(cache_filename):
             open(cache_filename, 'w').close()
